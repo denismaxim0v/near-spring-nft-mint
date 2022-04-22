@@ -46967,7 +46967,7 @@ var reloadCSS = require('_css_loader');
 
 module.hot.dispose(reloadCSS);
 module.hot.accept(reloadCSS);
-},{"./assets/logo-black.svg":[["logo-black.eab7a939.svg","assets/logo-black.svg"],"assets/logo-black.svg"],"./assets/logo-white.svg":[["logo-white.7fec831f.svg","assets/logo-white.svg"],"assets/logo-white.svg"],"_css_loader":"../node_modules/parcel-bundler/src/builtins/css-loader.js"}],"App.js":[function(require,module,exports) {
+},{"_css_loader":"../node_modules/parcel-bundler/src/builtins/css-loader.js"}],"App.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -46983,6 +46983,8 @@ var _utils = require("./utils");
 
 require("./global.css");
 
+var _bn = _interopRequireDefault(require("bn.js"));
+
 var _config = _interopRequireDefault(require("./config"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -46994,7 +46996,7 @@ const {
 function App() {
   const [nftData, setNftData] = _react.default.useState();
 
-  const [buttonDisabled, setButtonDisabled] = _react.default.useState(true);
+  const [buttonDisabled, setButtonDisabled] = _react.default.useState(false);
 
   const [showNotification, setShowNotification] = _react.default.useState(false);
 
@@ -47038,7 +47040,20 @@ function App() {
         float: "right"
       },
       onClick: _utils.logout
-    }, "Sign out"), /*#__PURE__*/_react.default.createElement("main", null, /*#__PURE__*/_react.default.createElement("h1", null, /*#__PURE__*/_react.default.createElement("label", {
+    }, "Sign out"), /*#__PURE__*/_react.default.createElement("main", null, /*#__PURE__*/_react.default.createElement("h1", null, /*#__PURE__*/_react.default.createElement("svg", {
+      style: {
+        height: "1em",
+        margin: "5%"
+      },
+      class: "whiteCat",
+      xmlns: "http://www.w3.org/2000/svg",
+      viewBox: "0 0 512 512"
+    }, /*#__PURE__*/_react.default.createElement("path", {
+      style: {
+        fill: "white"
+      },
+      d: "M290.59 192c-20.18 0-106.82 1.98-162.59 85.95V192c0-52.94-43.06-96-96-96-17.67 0-32 14.33-32 32s14.33 32 32 32c17.64 0 32 14.36 32 32v256c0 35.3 28.7 64 64 64h176c8.84 0 16-7.16 16-16v-16c0-17.67-14.33-32-32-32h-32l128-96v144c0 8.84 7.16 16 16 16h32c8.84 0 16-7.16 16-16V289.86c-10.29 2.67-20.89 4.54-32 4.54-61.81 0-113.52-44.05-125.41-102.4zM448 96h-64l-64-64v134.4c0 53.02 42.98 96 96 96s96-42.98 96-96V32l-64 64zm-72 80c-8.84 0-16-7.16-16-16s7.16-16 16-16 16 7.16 16 16-7.16 16-16 16zm80 0c-8.84 0-16-7.16-16-16s7.16-16 16-16 16 7.16 16 16-7.16 16-16 16z"
+    })), /*#__PURE__*/_react.default.createElement("label", {
       htmlFor: "greeting",
       style: {
         color: "var(--secondary)",
@@ -47046,22 +47061,25 @@ function App() {
       }
     }), " "
     /* React trims whitespace around tags; insert literal space character when needed */
-    , window.accountId, "!"), /*#__PURE__*/_react.default.createElement("form", {
+    , window.accountId, "!"), /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("img", {
+      src: nftData ? nftData.metadata.media : ""
+    })), /*#__PURE__*/_react.default.createElement("form", {
       onSubmit: async event => {
         event.preventDefault();
-        fieldset.disabled = true;
+        fieldset.disabled = false;
 
         try {
           // make an update call to the smart contract
           await window.contract.nft_mint({
             token_id: `${window.accountId}-NEAR-Cat`,
-            metadata: {
+            token_metadata: {
               title: "NEAR CATS",
               description: `Your purrfect NEAR Cat`,
               media: "https://i.postimg.cc/bwW7zMtG/nearcat.png"
             },
             receiver_id: window.accountId
-          });
+          }, // fails without this?
+          300000000000000, new _bn.default("1000000000000000000000000"));
         } catch (e) {
           alert("Something went wrong! " + "Maybe you need to sign out and back in? " + "Check your browser console for more info.");
           throw e;
@@ -47112,7 +47130,7 @@ function Notification() {
     href: `${urlPrefix}/${window.contract.contractId}`
   }, window.contract.contractId), /*#__PURE__*/_react.default.createElement("footer", null, /*#__PURE__*/_react.default.createElement("div", null, "\u2714 Succeeded"), /*#__PURE__*/_react.default.createElement("div", null, "Just now")));
 }
-},{"regenerator-runtime/runtime":"../node_modules/regenerator-runtime/runtime.js","react":"../node_modules/react/index.js","./utils":"utils.js","./global.css":"global.css","./config":"config.js"}],"index.js":[function(require,module,exports) {
+},{"regenerator-runtime/runtime":"../node_modules/regenerator-runtime/runtime.js","react":"../node_modules/react/index.js","./utils":"utils.js","./global.css":"global.css","bn.js":"../node_modules/bn.js/lib/bn.js","./config":"config.js"}],"index.js":[function(require,module,exports) {
 "use strict";
 
 var _react = _interopRequireDefault(require("react"));
@@ -47156,7 +47174,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "43073" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "35873" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
