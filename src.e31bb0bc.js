@@ -46876,9 +46876,9 @@ async function initContract() {
 
   window.contract = new _nearApiJs.Contract(window.walletConnection.account(), nearConfig.contractName, {
     // View methods are read only. They don't modify the state, but usually return some value.
-    viewMethods: ['nft_tokens_for_owner'],
+    viewMethods: ['check_token', 'nft_token'],
     // Change methods can modify the state. But you don't receive the returned value when called.
-    changeMethods: ['check_token', 'nft_token']
+    changeMethods: ['nft_mint']
   });
 }
 
@@ -46996,7 +46996,7 @@ const {
 function App() {
   const [nftData, setNftData] = _react.default.useState();
 
-  const [buttonDisabled, setButtonDisabled] = _react.default.useState(false);
+  const [buttonDisabled, setButtonDisabled] = _react.default.useState(true);
 
   const [showNotification, setShowNotification] = _react.default.useState(false);
 
@@ -47020,6 +47020,8 @@ function App() {
               setShowNotification(true);
             }
           });
+        } else {
+          setButtonDisabled(false);
         }
       });
     }
@@ -47180,7 +47182,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "38763" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "38185" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
