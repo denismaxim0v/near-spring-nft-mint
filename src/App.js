@@ -5,7 +5,7 @@ import "./global.css";
 import BN from "bn.js"
 
 import getConfig from "./config";
-const { networkId } = getConfig(process.env.NODE_ENV || "development");
+const { networkId } = getConfig("development");
 
 export default function App() {
   const [nftData, setNftData] = React.useState();
