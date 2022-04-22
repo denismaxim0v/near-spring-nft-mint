@@ -46859,7 +46859,7 @@ var _config = _interopRequireDefault(require("./config"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-const nearConfig = (0, _config.default)("development" || 'development'); // Initialize contract & set global variables
+const nearConfig = (0, _config.default)('development'); // Initialize contract & set global variables
 
 async function initContract() {
   // Initialize connection to the NEAR testnet
@@ -46878,7 +46878,7 @@ async function initContract() {
     // View methods are read only. They don't modify the state, but usually return some value.
     viewMethods: ['nft_tokens_for_owner'],
     // Change methods can modify the state. But you don't receive the returned value when called.
-    changeMethods: ['nft_mint']
+    changeMethods: ['check_token', 'nft_token']
   });
 }
 
@@ -46991,7 +46991,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 const {
   networkId
-} = (0, _config.default)("development" || "development");
+} = (0, _config.default)("development");
 
 function App() {
   const [nftData, setNftData] = _react.default.useState();
@@ -47005,15 +47005,21 @@ function App() {
     if (window.walletConnection.isSignedIn()) {
       // window.contract is set by initContract in index.js
       console.log(window.accountId);
-      window.contract.nft_tokens_for_owner({
-        account_id: window.accountId
+      window.contract.check_token({
+        id: `${window.accountId}-NEAR-Cat`
       }).then(response => {
-        console.log(response);
-        setNftData(...response);
+        if (response == true) {
+          window.contract.nft_token({
+            token_id: `${window.accountId}-NEAR-Cat`
+          }).then(response => {
+            console.log(response);
+            setNftData(response);
 
-        if (response.length > 0) {
-          setButtonDisabled(true);
-          setShowNotification(true);
+            if (response.length > 0) {
+              setButtonDisabled(true);
+              setShowNotification(true);
+            }
+          });
         }
       });
     }
@@ -47045,7 +47051,7 @@ function App() {
         height: "1em",
         margin: "5%"
       },
-      class: "whiteCat",
+      className: "whiteCat",
       xmlns: "http://www.w3.org/2000/svg",
       viewBox: "0 0 512 512"
     }, /*#__PURE__*/_react.default.createElement("path", {
@@ -47066,13 +47072,13 @@ function App() {
     })), /*#__PURE__*/_react.default.createElement("form", {
       onSubmit: async event => {
         event.preventDefault();
-        fieldset.disabled = false;
+        fieldset.disabled = true;
 
         try {
           // make an update call to the smart contract
           await window.contract.nft_mint({
             token_id: `${window.accountId}-NEAR-Cat`,
-            token_metadata: {
+            metadata: {
               title: "NEAR CATS",
               description: `Your purrfect NEAR Cat`,
               media: "https://i.postimg.cc/bwW7zMtG/nearcat.png"
@@ -47124,7 +47130,7 @@ function Notification() {
     href: `${urlPrefix}/${window.accountId}`
   }, window.accountId), " "
   /* React trims whitespace around tags; insert literal space character when needed */
-  , "called method: 'set_greeting' in contract:", " ", /*#__PURE__*/_react.default.createElement("a", {
+  , "called method: 'mint_nft' in contract:", " ", /*#__PURE__*/_react.default.createElement("a", {
     target: "_blank",
     rel: "noreferrer",
     href: `${urlPrefix}/${window.contract.contractId}`
@@ -47174,7 +47180,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "35873" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "38763" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
