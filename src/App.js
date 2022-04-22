@@ -155,7 +155,7 @@ function Notification() {
       {
         " " /* React trims whitespace around tags; insert literal space character when needed */
       }
-      called method: 'set_greeting' in contract:{" "}
+      called method: 'mint_nft' in contract:{" "}
       <a
         target="_blank"
         rel="noreferrer"
