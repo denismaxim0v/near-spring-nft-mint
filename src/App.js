@@ -10,7 +10,7 @@ const { networkId } = getConfig("development");
 export default function App() {
   const [nftData, setNftData] = React.useState();
 
-  const [buttonDisabled, setButtonDisabled] = React.useState(false);
+  const [buttonDisabled, setButtonDisabled] = React.useState(true);
 
   const [showNotification, setShowNotification] = React.useState(false);
 
@@ -33,6 +33,8 @@ export default function App() {
                   setShowNotification(true);
                 }
               });
+          } else {
+            setButtonDisabled(false);
           }
         });
     }
