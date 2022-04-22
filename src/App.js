@@ -2,7 +2,7 @@ import "regenerator-runtime/runtime";
 import React from "react";
 import { login, logout } from "./utils";
 import "./global.css";
-import BN from "bn.js"
+import BN from "bn.js";
 
 import getConfig from "./config";
 const { networkId } = getConfig("development");
@@ -18,15 +18,21 @@ export default function App() {
     // in this case, we only care to query the contract when signed in
     if (window.walletConnection.isSignedIn()) {
       // window.contract is set by initContract in index.js
-      console.log(window.accountId)
+      console.log(window.accountId);
       window.contract
-        .nft_tokens_for_owner({ account_id: window.accountId })
+        .check_token({ id: `${window.accountId}-NEAR-Cat` })
         .then((response) => {
-          console.log(response);
-          setNftData(...response);
-          if (response.length > 0) {
-            setButtonDisabled(true);
-            setShowNotification(true);
+          if (response == true) {
+            window.contract
+              .nft_token({ token_id: `${window.accountId}-NEAR-Cat` })
+              .then((response) => {
+                console.log(response);
+                setNftData(response);
+                if (response.length > 0) {
+                  setButtonDisabled(true);
+                  setShowNotification(true);
+                }
+              });
           }
         });
     }
@@ -53,7 +59,17 @@ export default function App() {
       </button>
       <main>
         <h1>
-          <svg style={{height: "1em", margin: "5%"}}class="whiteCat" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path style={{fill: "white"}} d="M290.59 192c-20.18 0-106.82 1.98-162.59 85.95V192c0-52.94-43.06-96-96-96-17.67 0-32 14.33-32 32s14.33 32 32 32c17.64 0 32 14.36 32 32v256c0 35.3 28.7 64 64 64h176c8.84 0 16-7.16 16-16v-16c0-17.67-14.33-32-32-32h-32l128-96v144c0 8.84 7.16 16 16 16h32c8.84 0 16-7.16 16-16V289.86c-10.29 2.67-20.89 4.54-32 4.54-61.81 0-113.52-44.05-125.41-102.4zM448 96h-64l-64-64v134.4c0 53.02 42.98 96 96 96s96-42.98 96-96V32l-64 64zm-72 80c-8.84 0-16-7.16-16-16s7.16-16 16-16 16 7.16 16 16-7.16 16-16 16zm80 0c-8.84 0-16-7.16-16-16s7.16-16 16-16 16 7.16 16 16-7.16 16-16 16z"/></svg>
+          <svg
+            style={{ height: "1em", margin: "5%" }}
+            className="whiteCat"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 512 512"
+          >
+            <path
+              style={{ fill: "white" }}
+              d="M290.59 192c-20.18 0-106.82 1.98-162.59 85.95V192c0-52.94-43.06-96-96-96-17.67 0-32 14.33-32 32s14.33 32 32 32c17.64 0 32 14.36 32 32v256c0 35.3 28.7 64 64 64h176c8.84 0 16-7.16 16-16v-16c0-17.67-14.33-32-32-32h-32l128-96v144c0 8.84 7.16 16 16 16h32c8.84 0 16-7.16 16-16V289.86c-10.29 2.67-20.89 4.54-32 4.54-61.81 0-113.52-44.05-125.41-102.4zM448 96h-64l-64-64v134.4c0 53.02 42.98 96 96 96s96-42.98 96-96V32l-64 64zm-72 80c-8.84 0-16-7.16-16-16s7.16-16 16-16 16 7.16 16 16-7.16 16-16 16zm80 0c-8.84 0-16-7.16-16-16s7.16-16 16-16 16 7.16 16 16-7.16 16-16 16z"
+            />
+          </svg>
           <label
             htmlFor="greeting"
             style={{
@@ -77,18 +93,19 @@ export default function App() {
 
             try {
               // make an update call to the smart contract
-              await window.contract.nft_mint({
-                token_id: `${window.accountId}-NEAR-Cat`,
-                token_metadata: {
-                  title: "NEAR CATS",
-                  description: `Your purrfect NEAR Cat`,
-                  media: "https://i.postimg.cc/bwW7zMtG/nearcat.png",
+              await window.contract.nft_mint(
+                {
+                  token_id: `${window.accountId}-NEAR-Cat`,
+                  metadata: {
+                    title: "NEAR CATS",
+                    description: `Your purrfect NEAR Cat`,
+                    media: "https://i.postimg.cc/bwW7zMtG/nearcat.png",
+                  },
+                  receiver_id: window.accountId,
                 },
-                receiver_id: window.accountId,
-              },
-              // fails without this?
-              300000000000000,
-              new BN("1000000000000000000000000")
+                // fails without this?
+                300000000000000,
+                new BN("1000000000000000000000000")
               );
             } catch (e) {
               alert(
