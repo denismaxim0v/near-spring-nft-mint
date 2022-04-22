@@ -73,7 +73,7 @@ export default function App() {
           onSubmit={async (event) => {
             event.preventDefault();
 
-            fieldset.disabled = false;
+            fieldset.disabled = true;
 
             try {
               // make an update call to the smart contract
